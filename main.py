@@ -67,7 +67,7 @@ def solve():                # Trigger the solving algorithm and initialise all r
         mainGrid.delete(inputSquare)
 
 def instaSolve():
-    global solving, solved, instaSolving, firstIndex, lastIndex, pointer, directiong, outputArray, inputArray, inputSquare
+    global solving, solved, instaSolving, firstIndex, lastIndex, pointer, direction, outputArray, inputArray, inputSquare
     if not solving and not solved:
         inputArray = outputArray.copy()
         solving, instaSolving, solved, pointer, direction = True, True, False, 0, 1
