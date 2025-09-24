@@ -57,17 +57,63 @@ def checkRowColBox(number, index, grid):
         if grid[i] == number or grid[i + 9] == number or grid[i + 18] == number: notInCell = False
     return notInRow and notInCol and notInCell
 
+# Check if puzzle is actually solvable before attempting to solve it
+def initialCheck():
+    global outputArray
+    # Check each column for duplicate values
+    for column in range(0, 9):
+        for i in range(1,10):
+            valueCount = 0
+            for row in range (0, 9):
+                if outputArray[row * 9 + column] == i:
+                    valueCount += 1
+            if valueCount > 1:
+                return False
+    # Check each row for duplicate values
+    for row in range (0, 9):
+        for i in range (1, 10):
+            valueCount = 0
+            for column in range (0, 9):
+                if outputArray[row * 9 + column] == i:
+                    valueCount += 1
+            if valueCount > 1:
+                return False
+    # Check each 3x3 box for duplicate values
+    for box in range (0, 9):
+        boxIndex = (box // 3) * 27 + (box % 3) * 3      # upper-left square of each box
+        for i in range (1, 10):
+            valueCount = 0
+            for column in range (0, 3):
+                for row in range (0, 3):
+                    if outputArray[boxIndex + (9 * row) + column] == i:
+                        valueCount += 1
+            if valueCount > 1:
+                return False
+    return True
+
+
 def solve():                # Trigger the solving algorithm and initialise all relevant variables
     global solving, solved, firstIndex, lastIndex, pointer, direction, outputArray, inputArray, inputSquare
+    # Perform initial check to see if puzzle can be solved
+    if not initialCheck():
+        resultText.set("This Sudoku cannot be solved.")
+        solving, solved = False, False
+        return
     if not solving and not solved:
         inputArray = outputArray.copy()
         solving, solved, pointer, direction = True, False, 0, 1
         firstIndex = outputArray.index(0)
         lastIndex = 80 - outputArray[::-1].index(0)
         mainGrid.delete(inputSquare)
+        resultText.set("Solving...")
 
 def instaSolve():
-    global solving, solved, instaSolving, firstIndex, lastIndex, pointer, direction, outputArray, inputArray, inputSquare
+    global solving, solved, instaSolving, firstIndex, lastIndex, pointer, directiong, outputArray, inputArray, inputSquare
+    # Perform initial check to see if puzzle can be solved
+    if not initialCheck():
+        resultText.set("This Sudoku cannot be solved.")
+        solving, solved = False, False
+        return
     if not solving and not solved:
         inputArray = outputArray.copy()
         solving, instaSolving, solved, pointer, direction = True, True, False, 0, 1
